@@ -27,8 +27,8 @@ void tambah_portofolio() {
     cout << "Masukkan Harga/item: ";
     while (!(cin >> portofolio[jumlahInvestasi].harga)) {
         cout << "Harus berupa angka,Ulangi lagi: ";
-        cin.clear(); // Menghapus error flag pada cin
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
     jumlahInvestasi++;
     cout << "Berhasil Membuat Portofolio\n";
@@ -60,14 +60,14 @@ void update_portofolio() {
             cout << "Masukkan Jumlah yang Baru: ";
             while (!(cin >> portofolio[indeks - 1].jumlah)) {
                 cout << "Harus berupa angka,Ulangi lagi: ";
-                cin.clear(); // Menghapus error flag pada cin
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
             }
             cout << "Masukkan Harga yang Baru: ";
             while (!(cin >> portofolio[indeks - 1].harga)) {
                 cout << "Harus berupa angka,Ulangi lagi: ";
-                cin.clear(); // Menghapus error flag pada cin
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
             }
             cout << "Berhasil Memperbarui Portofolio\n";
         } else {
@@ -154,8 +154,8 @@ int main()
         cout << "Pilihan: ";
         while (!(cin >> pilihan) || pilihan < 1 || pilihan > 5) { // Agar selain input angka tidak crash/error
             cout << "Pilihan tidak valid. Masukkan nomor pilihan yang sesuai: ";
-            cin.clear(); // Menghapus error flag pada cin
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer
+            cin.clear(); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
         if (pilihan == 6) break; //keluar dari program 
