@@ -130,15 +130,15 @@ bool registrasi() {
 void menuawal(){
     while (true)
     {
-        cout << "______________________________________________\n" << endl;
-        cout << "Selamat datang di Program Portofolio Investasi\n" <<endl;
-        cout << "__        MENU       __\n";
-        cout << "1. Login" << endl;
-        cout << "2. Registrasi" << endl;
-        cout << "3. Keluar" << endl;
+        cout << "\t\t\n\n\n" << endl;
+        cout << "\t\t\t Selamat datang di Program Portofolio Investasi \n\n";
+        cout << "\t\t        MENU        \n\n\n";
+        cout << "\t1. Login" << endl;
+        cout << "\t2. Registrasi" << endl;
+        cout << "\t3. Keluar" << endl;
         int pilihan;
         cout << "\n\t Masukkan Pilihan: ";
-        while (!(cin >> pilihan) || pilihan < 1 || pilihan > 4) { 
+        while (!(cin >> pilihan) || pilihan < 1 || pilihan >= 4) { 
             cout << "Pilihan tidak valid. Masukkan nomor pilihan yang sesuai: ";
             cin.clear(); 
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
@@ -184,7 +184,7 @@ string buatFileInvestasi(const string& nama_pengguna) {
 
 // Fungsi Menambahkan Investasi dan menyimpan ke dalam file CSV
 void tambah_portofolio(const string& nama_file) {
-    Investasi investasi;
+    Investasi* investasi = new Investasi(); // Menggunakan pointer
     cout << "Pilih jenis investasi: " << endl;
     cout << "1. Saham" << endl;
     cout << "2. Crypto" << endl;
@@ -199,45 +199,47 @@ void tambah_portofolio(const string& nama_file) {
 
     switch(jenis) {
         case 1:
-            investasi.jenis = "Saham";
+            investasi->jenis = "Saham";
             break;
         case 2:
-            investasi.jenis = "Crypto";
+            investasi->jenis = "Crypto";
             break;
         case 3:
-            investasi.jenis = "Emas";
+            investasi->jenis = "Emas";
             break;
         case 4: // Opsi untuk kembali ke menu investasi
+            delete investasi; // Jangan lupa menghapus alokasi memori
             return;
         default:
             cout << "Pilihan tidak valid!" << endl;
+            delete investasi; // Jangan lupa menghapus alokasi memori
             // Kembali ke menu utama
             return;
     }
 
-    cout << "Nama " << investasi.jenis << "          : ";
-    getline(cin, investasi.nama);
-    while (check_number(investasi.nama)) {
+    cout << "Nama " << investasi->jenis << "          : ";
+    getline(cin, investasi->nama);
+    while (check_number(investasi->nama) || investasi->nama.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
         cout << "Harus berupa huruf. Masukkan lagi: ";
-        getline(cin, investasi.nama);
+        getline(cin, investasi->nama);
     }
 
     string jumlah, harga;
-    cout << "Jumlah" << (jenis == 1 ? "Lembar" : jenis == 2 ? "Coin" : "Gram") << "          : ";
+    cout << "Jumlah " << (jenis == 1 ? "Lembar" : jenis == 2 ? "Coin" : "Gram") << "          : ";
     getline(cin, jumlah);
     while (!check_number(jumlah)) {
         cout << "Harus berupa angka. Masukkan lagi: ";
         getline(cin, jumlah);
     }
 
-    investasi.jumlah = stof(jumlah);
-    cout << "Harga/" << (jenis == 1 ? "Saham" : jenis == 2 ? "Coin" : "Emas") << "          : ";
+    investasi->jumlah = stof(jumlah);
+    cout << "Harga/" << (jenis == 1 ? "Saham" : jenis == 2 ? "Coin" : "Emas") << "           : ";
     getline(cin, harga);
     while (!check_number(harga)) {
         cout << "Harus berupa angka. Masukkan lagi: ";
         getline(cin, harga);
     }
-    investasi.harga = stof(harga);
+    investasi->harga = stof(harga);
 
     // Baca nomor urut terakhir dari file
     int no = 0;
@@ -253,17 +255,20 @@ void tambah_portofolio(const string& nama_file) {
         file_in.close();
     }
 
-    investasi.no = no + 1;
+    investasi->no = no + 1;
     ofstream file(nama_file, ios::app); // ios::app untuk mode append
     if (file.is_open()) {
         file << fixed << setprecision(0);
-        file << investasi.no << "," << uname << "," << investasi.jenis << "," << investasi.nama << "," << investasi.jumlah << "," << investasi.harga << "\n";
+        file << investasi->no << "," << uname << "," << investasi->jenis << "," << investasi->nama << "," << investasi->jumlah << "," << investasi->harga << "\n";
         file.close();
         cout << "Data investasi berhasil disimpan dalam file " << nama_file << endl;
     } else {
         cout << "Gagal membuka file untuk disimpan\n";
     }
+
+    delete investasi; // Jangan lupa menghapus alokasi memori
 }
+
 
 //Fungsi Menampilkan Portofolio
 void tampilkan_portofolio(const string& nama_file) {
@@ -393,10 +398,6 @@ void update_portofolio(const string& nama_file) {
         	break;
         case 2:
         	return;
-        default:
-        	cout << "Pilihan tidak valid!" << endl;
-        	// Kembali ke menu utama
-        	return;
 	}
 
     ifstream file(nama_file);
@@ -454,7 +455,7 @@ void update_portofolio(const string& nama_file) {
 
             cout << "Nama " << investasi.jenis << "          : ";
             getline(cin, investasi.nama);
-            while (check_number(investasi.nama)){
+            while (check_number(investasi.nama) || investasi.nama.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos){
                 cout << "Harus berupa huruf. Masukkan lagi: ";
                 getline(cin, investasi.nama);
             }
@@ -502,6 +503,7 @@ void update_portofolio(const string& nama_file) {
         cout << "Gagal membuka file " << nama_file << endl;
     }
 }
+
 // Fungsi Mengitung Total Investasi
 void total_portofolio(const string& nama_file) {
     ifstream file(nama_file);
